@@ -5,6 +5,7 @@ import com.believe.royalties.models.{Album, Sale, Song}
 import com.believe.royalties.processor.Processor
 import com.believe.royalties.utils.spark.SparkHelper
 import com.believe.royalties.utils.spark.sources.csv.CSVDataSource
+import com.believe.royalties.utils.spark.sources.delta.DeltaDataSource
 import org.apache.spark.sql.{DataFrame, Dataset, Encoders}
 
 case class StandardizedData(upc: String, isrc: String, label_name: String, album_name: String, song_id: BigInt,
@@ -93,7 +94,8 @@ class SalesDataEnrichmentProcessor() extends Processor {
         $"content_type", $"total_net_revenue", $"country".as("sales_country"))
   }
 
-  def writeData(df: Dataset[StandardizedData]): Unit = {
-    df.write.format("delta").mode("overwrite").save(ConfigLoader.getApplicationConfig.outputPath)
+  def writeData(ds: Dataset[StandardizedData]): Unit = {
+    val deltaSource = new DeltaDataSource[StandardizedData](ds, ConfigLoader.getApplicationConfig.outputPath)
+    deltaSource.write()
   }
 }
