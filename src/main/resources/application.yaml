@@ -1,0 +1,9 @@
+spark:
+  master: "local[*]"
+  app_name: "Believe Ingestion Challenge"
+
+application:
+  albums_path: "C:\\data\\albums.csv"
+  songs_path: "C:\\data\\songs.csv"
+  sales_path: "C:\\data\\sales.csv"
+  output_path: "C:\\output"
